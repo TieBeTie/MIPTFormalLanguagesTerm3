@@ -94,14 +94,15 @@ class Earley:
             self.add_situation(situation, word_tale)
 
     # добавление ситуации в конкретное множество ситуаций, происходит меньше, чем за O(n), хэш-таблица
-    def add_situation(self, situation, word_tale):
+    def add_situation(self, retry_situation, word_tale):
         is_already_added = False
         for situation in self.D[word_tale]:
-            if (situation.out == situation.out and situation.entry == situation.entry
-                    and situation.point == situation.point and situation.ind == situation.ind):
+            if (situation.out == retry_situation.out and situation.entry == retry_situation.entry
+                    and situation.point == retry_situation.point and situation.ind == retry_situation.ind):
                 is_already_added = True
         if not is_already_added:
             self.D[word_tale].add(situation)
+
 
 class Rule:
     def __init__(self, rule):
