@@ -1,8 +1,9 @@
 class Earley:
-    def __init__(self, word):
+    def __init__(self, word, rules):
         self.word = word
         self.D = {}
         self.rules = []
+        self.parse_rules(rules)
         # Инициализация множества ситуаций D0, . . . , D|w|
         self.D[0] = set()
         self.D[0].add(Situation('S#', 'S', 0, 0))
@@ -10,8 +11,7 @@ class Earley:
             self.D[i] = set()
 
     # Проверка пренадлежности слова грамматике
-    def check(self, rules):
-        self.parse_rules(rules)
+    def check(self):
         # разберём базу отдельно
         past_len = len(self.D[0])
         self.predict(0)
@@ -38,11 +38,12 @@ class Earley:
         for situation in self.D[len(self.word)]:
             if situation.entry == 'S#' and situation.out == 'S' and \
                     situation.ind == 0 and situation.point == 1:
-                return True
-        return False
+                return 'Выводится'
+        return 'Не выводится'
 
     # Конвертирование правил в удобный для использования вид
     def parse_rules(self, rules):
+        self.rules.append(Rule(['S#', 'S']))
         for rule in rules:
             self.rules.append(Rule(str(rule).split(' -> ')))
 
@@ -101,7 +102,7 @@ class Earley:
                     and situation.point == retry_situation.point and situation.ind == retry_situation.ind):
                 is_already_added = True
         if not is_already_added:
-            self.D[word_tale].add(situation)
+            self.D[word_tale].add(retry_situation)
 
 
 class Rule:

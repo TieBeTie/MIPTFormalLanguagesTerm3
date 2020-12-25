@@ -2,7 +2,7 @@ from Earley import Earley
 
 
 def main():
-    rules = ['S* -> S']
+    rules = []
     print("Задайте правила в формате A -> B, для завершения переведите строку")
     line = ' '
     while line != '':
@@ -11,9 +11,9 @@ def main():
     rules.pop()
 
     print("Какое слово проверить?")
-    word = Earley(input())
+    word = Earley(input(), rules)
 
-    if word.check(rules):
+    if word.check():
         print('Слово выводится')
     else:
         print('Слово не выводится')
