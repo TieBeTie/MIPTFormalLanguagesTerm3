@@ -13,10 +13,7 @@ def main():
     print("Какое слово проверить?")
     word = Earley(input(), rules)
 
-    if word.check():
-        print('Слово выводится')
-    else:
-        print('Слово не выводится')
+    print(word.check())
 
 
 if __name__ == "__main__":
