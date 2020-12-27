@@ -1,6 +1,6 @@
 #include <iostream>
 #include "gtest/gtest.h"
-#include "main.h"
+#include "RegularExp.cpp"
 
 TEST(Concatination, 0) {
   EXPECT_EQ(MinWordPrefixK("ab.", 'a', 2), INF);

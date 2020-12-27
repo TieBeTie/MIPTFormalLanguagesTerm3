@@ -1,3 +1,7 @@
+#ifndef PRACTICUM_REGULAREXP_H
+#define PRACTICUM_REGULAREXP_H
+
+
 #include <iostream>
 #include <stack>
 #include <vector>
@@ -35,7 +39,7 @@ public:
     int result_prefix;
     int result_word;
     for (int n = 0; n <= k; ++n) {
-      if (IsXWord(alpha, n)) {
+      if (IsXWord(alpha.prefix, n)) {
         for (int m = 0; m <= k; ++m) {
           if (WordIsExist(beta.prefix[m])) {
             // положим наверх, если слово будет длиннее, чем k
@@ -45,7 +49,7 @@ public:
             if (result_prefix <= k) {
               prefix[result_prefix] = min(prefix[result_prefix], result_word);
               //если beta - префикс-слово
-              if (IsXWord(beta, m) && result_word <= k) {
+              if (IsXWord(beta.prefix, m) && result_word <= k) {
                 prefix[result_word] = result_word;
               }
 
@@ -61,7 +65,7 @@ public:
     //u.v
     int min_word;
     for (int n = 0; n <= k; ++n) {
-      if (!IsXWord(alpha, n) && WordIsExist(alpha.prefix[n])) {
+      if (!IsXWord(alpha.prefix, n) && WordIsExist(alpha.prefix[n])) {
         min_word = INF;
         //если не найдено, значит несуществует
         //конкатенируем каждое слово, несостоящее из префикса, c минимальным словом
@@ -82,21 +86,20 @@ public:
     for (int i = 1; i <= k; ++i) {
       prefix[i] = alpha.prefix[i];
     }
+    //поиск реальных слов состоящих только из букв x
     for (int left = 1; left <= k; ++left) {
-      if (IsXWord(*this, left)) {
-        for (int right = 1; right <= k; ++right) {
-          if (IsXWord(*this, right)) {
-            Bruteforce(left, right);
-            Recovery();
-          }
-        }
+      int right = left + 1;
+      if (IsXWord(prefix, left) && IsXWord(prefix, right)) {
+        Bruteforce(left, right);
       }
     }
+    Recovery();
+    //прибавка к словам из x всевозможных слов, состоящих не только из х
     int result_word;
     int result_prefix;
     int min_word = INF;
     for (int m = 1; m <= k; ++m) {
-      if (IsXWord(*this, m)) {
+      if (IsXWord(prefix, m)) {
         for (int n = 1; n <= k; ++n) {
           if (WordIsExist(prefix[n])) {
             result_prefix = m + n;
@@ -115,7 +118,7 @@ public:
   }
 
 private:
-  static bool WordIsExist(int len_word) {
+  bool WordIsExist(int len_word) {
     return len_word < INF;
   }
 
@@ -137,8 +140,8 @@ private:
     prefix[k] = min(prefix[k], min_word);
   }
 
-  static bool IsXWord(const RegularExp &expression, int len_word) {
-    return expression.prefix[len_word] == len_word;
+  bool IsXWord(const vector<int> &pref, int len_word) {
+    return pref[len_word] == len_word;
   }
 
   //если слово появилось с каким-то префиксом появилось
@@ -151,52 +154,5 @@ private:
   }
 };
 
-bool IsCorrectSymbol(char symbol) {
-  string correct_symbol = "abc1.+*";
-  return correct_symbol.find(symbol) != std::string::npos;
-}
 
-int MinWordPrefixK(const string &expression, const char x, int k) {
-  stack<RegularExp> parser;
-  RegularExp alpha(k);
-  RegularExp beta(k);
-  RegularExp result(k);
-
-  for (char symbol : expression) {
-    if (!IsCorrectSymbol(symbol)) {
-      return -1;
-    }
-    result = RegularExp(k);
-    if (symbol == '+' || symbol == '.' || symbol == '*') {
-      if (parser.empty()) {
-        return -1;
-      }
-      beta = parser.top();   //обработать
-      parser.pop();
-      if (symbol == '*') {
-        result.Star(beta);
-      } else {
-        if (parser.empty()) {
-          return -1;
-        }
-        alpha = parser.top();
-        parser.pop();
-        if (symbol == '+') {
-          result.Plus(alpha, beta);
-        } else {
-          result.Concat(alpha, beta);
-        }
-      }
-    } else if (symbol == x) {
-      result.prefix[0] = 1;
-      result.prefix[1] = 1;
-    } else if (symbol == '1') {
-      result.prefix[0] = 0;
-    } else {
-      result.prefix[0] = 1;
-    }
-    parser.push(result);
-  }
-  int min_word = parser.size() == 1 ? parser.top().prefix[k] : -1;
-  return min_word;
-}
+#endif //PRACTICUM_REGULAREXP_H
