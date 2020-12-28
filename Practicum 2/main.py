@@ -11,9 +11,11 @@ def main():
     rules.pop()
 
     print("Какое слово проверить?")
-    word = Earley(input(), rules)
-
-    print(word.check())
+    earley = Earley()
+    if earley.check(input(), rules):
+        print('Выводится')
+    else:
+        print('Не выводится')
 
 
 if __name__ == "__main__":
