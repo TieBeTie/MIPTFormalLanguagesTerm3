@@ -2,7 +2,6 @@ import unittest
 from Earley import Earley
 from Earley import States
 
-
 class CheckTest(unittest.TestCase):
     def test_1(self):
         earley = Earley()
