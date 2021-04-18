@@ -1,6 +1,5 @@
 from Earley import Earley
 
-
 def main():
     rules = []
     print("Задайте правила в формате A -> B, для завершения переведите строку")
