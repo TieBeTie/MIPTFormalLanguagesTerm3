@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 class Earley:
     def __init__(self):
         self.word = str
